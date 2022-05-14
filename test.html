@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="http://js.loc.com:8081/scpo-ajax.js"></script>
+	<script>
+		function getTest() {
+			ScpoAJAX.get('./test.php', ScpoAJAX.query.toObj(frmTest), function (data) {
+				console.log(data);
+			});
+		}
+		function postTest() {
+			ScpoAJAX.post('./test.php', ScpoAJAX.query.toObj(frmTest), function (data) {
+				console.log(data);
+			});
+		}
+	</script>
+</head>
+
+<body>
+	<form id="frmTest">
+		count:<br />
+		<input name="count" value="1" /><br />
+		commit:<br />
+		<input name="commit" value="good" /><br />
+		<div>
+			item[0]:<br />
+			<input name="item[0]" value="apple" /><br />
+			item[1]:<br />
+			<input name="item[1]" value="banana" /><br />
+		</div>
+	</form>
+	<button onclick="getTest()">GET</button>
+	<button onclick="postTest()">POST</button>
+</body>
+
+</html>
