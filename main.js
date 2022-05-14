@@ -83,7 +83,7 @@ var ScpoAJAX;
 		}
 		if (typeof data === "object") data = query.obj2str(data);
 		if (method === "get") {
-			xmlhttp.open("GET", url + "?" + data, async);
+			xmlhttp.open("GET", url + (data ? "?" + data : ""), async);
 			xmlhttp.send();
 		} else {
 			xmlhttp.open("POST", url, async);
