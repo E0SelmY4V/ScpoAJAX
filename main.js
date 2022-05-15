@@ -126,4 +126,4 @@ var ScpoAJAX;
 	scpo.request = request;
 	scpo.get = get;
 	scpo.post = post;
-}(window.ScpoAJAX ? ScpoAJAX : window.ScpoAJAX = {}));
+}(window.ScpoAJAX ? ScpoAJAX : ScpoAJAX = {}));
