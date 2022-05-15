@@ -11,8 +11,9 @@
 
 ### 使用方法：
 
-1. `<script src="//js.seventop.top/scpo-ajax.js">`引入ScpoAJAX。
-2. 用。
+1. `<script src="//js.seventop.top/scpo-ajax.js"></script>`
+   引入ScpoAJAX。
+4. 用。
 
 # ScpoAJAX
 
@@ -29,5 +30,5 @@ Function List
 
 ### How to Use
 
-1. Include ScpoAJAX with `<script src="//js.seventop.top/scpo-ajax.js">`.
+1. Include ScpoAJAX with `<script src="//js.seventop.top/scpo-ajax.js"></script>`.
 2. Enjoy.
