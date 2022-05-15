@@ -2,7 +2,7 @@
 /**
  * 原生小AJAX函数库
  * @author E0SelmY4V - from 幻想私社
- * @version 1.0 包含参数操作四个函数和三个AJAX函数
+ * @version 1.1 包含参数操作四个函数和三个AJAX函数
  * @link https://github.com/E0SelmY4V/scpo-ajax/
  */
 var ScpoAJAX;
@@ -67,13 +67,13 @@ var ScpoAJAX;
 	 * @param {"post"|"get"} method 请求方法
 	 * @param {object|string} data 请求数据
 	 * @param {(data: string|XMLDocument) => any} todo 请求成功后执行的函数，一个参数接受请求返回的数据
-	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
-	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
 	 * @param {(xmlhttp: XMLHttpRequest) => any} ordo 请求失败后执行的函数，一个参数接受XMLHttpRequest对象
+	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
+	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
 	 * @param {(xmlhttp: XMLHttpRequest) => any} scdo 请求未完成时readyState变化时执行的函数
 	 * @returns {void|any} 若异步则返回void，否则返回todo或rodo函数执行的结果
 	 */
-	function request(url, method, data, todo, async, format, ordo, scdo) {
+	function request(url, method, data, todo, ordo, format, async, scdo) {
 		if (typeof async === "undefined") async = scpo.async;
 		if (async) xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState === 4 && async) {
@@ -100,28 +100,28 @@ var ScpoAJAX;
 	 * @param {string} url 请求地址
 	 * @param {object|string} data 请求数据
 	 * @param {(data: string|XMLDocument) => any} todo 请求成功后执行的函数，一个参数接受请求返回的数据
-	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
-	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
 	 * @param {(xmlhttp: XMLHttpRequest) => any} ordo 请求失败后执行的函数，一个参数接受XMLHttpRequest对象
+	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
+	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
 	 * @param {(xmlhttp: XMLHttpRequest) => any} scdo 请求未完成时readyState变化时执行的函数
 	 * @returns {void|any} 若异步则返回void，否则返回todo或rodo函数执行的结果
 	 */
-	function get(url, data, todo, async, format, ordo, scdo) {
-		request(url, "get", data, todo, async, format, ordo, scdo);
+	function get(url, data, todo, ordo, format, async, scdo) {
+		request(url, "get", data, todo, ordo, format, async, scdo);
 	}
 	/**
 	 * get请求
 	 * @param {string} url 请求地址
 	 * @param {object|string} data 请求数据
 	 * @param {(data: string|XMLDocument) => any} todo 请求成功后执行的函数，一个参数接受请求返回的数据
-	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
-	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
 	 * @param {(xmlhttp: XMLHttpRequest) => any} ordo 请求失败后执行的函数，一个参数接受XMLHttpRequest对象
+	 * @param {"xml"|"str"} format 返回数据的格式，默认为"str"
+	 * @param {bool} async 是否异步，默认为ScpoAJAX.async
 	 * @param {(xmlhttp: XMLHttpRequest) => any} scdo 请求未完成时readyState变化时执行的函数
 	 * @returns {void|any} 若异步则返回void，否则返回todo或rodo函数执行的结果
 	 */
-	function post(url, data, todo, async, format, ordo, scdo) {
-		request(url, "post", data, todo, async, format, ordo, scdo);
+	function post(url, data, todo, ordo, format, async, scdo) {
+		request(url, "post", data, todo, ordo, format, async, scdo);
 	}
 	scpo.request = request;
 	scpo.get = get;
