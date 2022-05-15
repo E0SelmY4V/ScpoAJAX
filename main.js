@@ -25,7 +25,7 @@ var ScpoAJAX;
 		 * @returns {object} 请求键值对
 		 */
 		toObj: function (form) {
-			var iptlist = form.getElementsByTagName("input"), i = -1, ipt, obj = {}
+			var iptlist = form.getElementsByTagName("input"), i = -1, ipt, obj = {};
 			while (ipt = iptlist[++i]) obj[ipt.name] = ipt.value;
 			return obj;
 		},
@@ -77,10 +77,10 @@ var ScpoAJAX;
 		if (typeof async === "undefined") async = scpo.async;
 		if (async) xmlhttp.onreadystatechange = function () {
 			if (xmlhttp.readyState === 4 && async) {
-				if (xmlhttp.status === 200 && todo) todo(format === "xml" ? xmlhttp.responseXML : xmlhttp.responseText)
+				if (xmlhttp.status === 200 && todo) todo(format === "xml" ? xmlhttp.responseXML : xmlhttp.responseText);
 				else if (ordo) ordo(xmlhttp);
 			} else if (scdo) scdo(xmlhttp);
-		}
+		};
 		if (typeof data === "object") data = query.obj2str(data);
 		if (method === "get") {
 			xmlhttp.open("GET", url + (data ? "?" + data : ""), async);
