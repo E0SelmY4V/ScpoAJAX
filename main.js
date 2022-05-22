@@ -42,7 +42,7 @@ var ScpoAJAX = {
 		 */
 		toStr: function (form) {
 			var iptlist = form.getElementsByTagName("input"), i = -1, ipt, str = "";
-			while (ipt = iptlist[++i]) str += ipt.name + "=" + ipt.value + "&";
+			while (ipt = iptlist[++i]) str += encodeURIComponent(ipt.name) + "=" + encodeURIComponent(ipt.value) + "&";
 			return str.slice(0, -1);
 		},
 		/**
@@ -58,27 +58,24 @@ var ScpoAJAX = {
 		/**
 		 * 根据请求键值对生成请求字符串
 		 * @param {object} obj 请求键值对
-		 * @return {string} 请求字符串
+		 * @returns {string} 请求字符串
 		 */
 		obj2str: function (obj) {
 			var str = "";
-			for (var i in obj) str += i + "=" + obj[i] + "&";
+			for (var i in obj) str += encodeURIComponent(i) + "=" + encodeURIComponent(obj[i]) + "&";
 			return str.slice(0, -1);
 		},
 		/**
 		 * 根据请求键值对生成请求字符串
 		 * @param {string} str 请求字符串
-		 * @return {object} 请求键值对
+		 * @returns {object} 请求键值对
 		 */
 		str2obj: function (str) {
 			var arr = str.split("&"), obj = {}, pos, i = 0;
-			while (str = arr[i++]) obj[str.slice(0, pos = str.indexOf("="))] = str.slice(pos + 1);
+			while (str = arr[i++]) obj[decodeURIComponent(str.slice(0, pos = str.indexOf("=")))] = decodeURIComponent(str.slice(pos + 1));
 			return obj;
 		}
 	},
-	/**XMLHttpRequest对象
-	 * @type {XMLHttpRequest} */
-	xmlhttp: window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP"),
 	/**
 	 * 发起AJAX请求
 	 * @param {string} url 请求地址，默认为ScpoAJAX.config.url
@@ -92,18 +89,17 @@ var ScpoAJAX = {
 	 * @returns {void|any} 若异步则返回void，否则返回todo或ordo函数执行的结果
 	 */
 	request: function (url, method, data, todo, ordo, format, async, scdo) {
-		var scpo = this, cfg = scpo.config, xh = scpo.xmlhttp;
+		var scpo = this, cfg = scpo.config, xh = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
 		if (typeof url == "undefined") url = cfg.url;
-		if (typeof data == "object") data = scpo.query.obj2str(data);
+		if (data instanceof Object) data = scpo.query.obj2str(data);
 		if (!todo) todo = cfg.todo;
 		if (!ordo) ordo = cfg.ordo;
 		if (typeof async == "undefined") async = cfg.async;
 		format = "response" + ((format ? format : cfg.format) == "xml" ? "XML" : "Text");
 		if (async) xh.onreadystatechange = function () {
-			if (xh.readyState == 4) {
-				if (xh.status == 200) todo(xh[format]);
-				else ordo(xh);
-			} else (scdo ? scdo : cfg.scdo)(xh);
+			xh.readyState == 4
+				? xh.status == 200 ? todo(xh[format]) : ordo(xh)
+				: (scdo ? scdo : cfg.scdo)(xh);
 		};
 		if ((method ? method : cfg.method) == "get") {
 			xh.open("GET", url + (data ? "?" + data : ""), async);
@@ -113,10 +109,7 @@ var ScpoAJAX = {
 			xh.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			xh.send(data);
 		}
-		if (!async) {
-			if (xh.status === 200) return todo(xh[format]);
-			else return ordo(xh);
-		}
+		if (!async) return xh.status == 200 ? todo(xh[format]) : ordo(xh);
 	},
 	/**
 	 * get请求
