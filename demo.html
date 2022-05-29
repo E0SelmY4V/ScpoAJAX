@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>ScpoWR Demo</title>
+	<script src="http://js.seventop.top/scpo-webreq.js"></script>
+	<script>
+		function log(n) {
+			con.innerHTML += n;
+		}
+		function cls() {
+			con.innerHTML = "";
+		}
+		var testFunc = [() => {
+			cls();
+			log(ScpoWR.qrycnv.toStr(frmTest));
+		}, () => {
+			cls();
+			ScpoWR
+				.then(() => "hhhh + ")
+				.then(add => log(add + "success\n"))
+				.fpost("test.php", "count=123&commit=good")
+				.then(data => data + "...And I'm coming!\n")
+				.then(md => log(md))
+				.fget("test.php", { count: 123, commit: "good" })
+				.then(data => log(data))
+				.fpost("test.php", frmTest)
+				.then(data => log(data))
+				.fget("//wrong-website")
+				.onerr(() => log("failure\n"))
+				.then(() => log("you can't see me\n"))
+				.fpost("//wrong-website")
+				.then(() => log("you can't see me, too\n"));
+		}, () => {
+			cls();
+			ScpoWR.fset({
+				ordo: () => log("failure\n"),
+				todo: data => log(data)
+			});
+			ScpoWR.post("test.php", "id=0&count=123&commit=good");
+			ScpoWR.get("test.php", "id=1&count=123&commit=good");
+			ScpoWR.post("//wrong-website", "id=2&count=123&commit=good");
+		}];
+	</script>
+</head>
+
+<body>
+	<form id="frmTest">
+		count:<br />
+		<input name="count" value="123" /><br />
+		commit:<br />
+		<input name="commit" value="good" /><br />
+	</form>
+	<button onclick="testFunc[0]()">test0</button>
+	<button onclick="testFunc[1]()">test1</button>
+	<button onclick="testFunc[2]()">test2</button>
+	<h2>Output:</h2>
+	<pre id="con"></pre>
+</body>
+
+</html>

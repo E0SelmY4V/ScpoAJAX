@@ -1,5 +1,10 @@
 <?php
-header('Content-type: application/json');
-if ($_POST) die(json_encode($_POST));
-if ($_GET) die(json_encode($_GET));
-die('"none"');
+if ($_POST) die(var_dump($_POST) . 'POST<br><br>');
+if ($_GET) die(var_dump($_GET) . 'GET<br><br>');
+?>
+<script>
+	window.onmessage = function() {
+		document.write('hh');
+	}
+</script>
+jj

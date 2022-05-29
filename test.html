@@ -5,22 +5,41 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
-	<script src="http://js.loc.com:8081/scpo-ajax.js"></script>
+	<script src="http://js.loc.com:8081/scpo-webreq.js"></script>
 	<script>
 		function getTest() {
-			ScpoAJAX.get('./test.php', ScpoAJAX.query.toObj(frmTest), function (data) {
-				console.log(data);
-			});
+			ScpoWR
+				.then(() => "hhhh + ")
+				.then(add => con.innerHTML += add + "success\n")
+				.fget("test.php", {hh: 123})
+				.then(data => data + "...And I'm coming!\n")
+				.then(md => con.innerHTML += md)
+				.fpost("test.php", "hh=123")
+				.then(data => con.innerHTML += data)
+				.fget("//tesmo")
+				.onerr(() => con.innerHTML += "faild\n")
+				.fget("//tesmo")
+				.then(
+					() => con.innerHTML += "success\n",
+					() => con.innerHTML += "faild\n"
+				)
+				.then(() => con.innerHTML += "you can't see me\n");
 		}
 		function postTest() {
-			ScpoAJAX.post('./test.php', ScpoAJAX.query.toObj(frmTest), function (data) {
-				console.log(data);
-			});
+			var i, noList = {
+				"contentWindow": 1,
+			};
+			try {
+				con.innerHTML += ScpoWR.config;
+			}catch(e){con.innerHTML=i+"<br>"+e.message}
 		}
 	</script>
 </head>
 
 <body>
+	<iframe name="ifr" src="//loc.com:8081/js/script/scpo/webreq/test.php"></iframe>
+	<object id="testObj" data="//loc.com:8081/js/script/scpo/webreq/test.php"></object>
+	<pre id="con"></pre>
 	<form id="frmTest">
 		count:<br />
 		<input name="count" value="1" /><br />
