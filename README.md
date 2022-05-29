@@ -1,4 +1,4 @@
-# ScpoAJAX
+# ScpoWR
 
 幻想私社开发！——个比较小但是用起来还挺方便的小网络请求函数库
 
@@ -15,7 +15,7 @@
 
 示例请见`demo.html`。
 
-# ScpoAJAX
+# ScpoWR
 
 Developed by Scpos!
 
