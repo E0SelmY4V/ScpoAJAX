@@ -5,7 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ScpoWR Demo</title>
-	<script src="http://js.seventop.top/scpo-webreq.js"></script>
+	<script src="http://js.loc.com:8081/scpo-webreq.js"></script>
 	<script>
 		function log(n) {
 			con.innerHTML += n;
@@ -15,7 +15,12 @@
 		}
 		var testFunc = [() => {
 			cls();
-			log(ScpoWR.qrycnv.toStr(frmTest));
+			ScpoWR.fget("test.php", frmTest)
+				.then(data => log(data));
+			ScpoWR.fpost("test.php", frmTest)
+				.then(data => log(data));
+			ScpoWR.frequest("get", "test.php", frmTest)
+				.then(data => log(data));
 		}, () => {
 			cls();
 			ScpoWR
@@ -42,6 +47,7 @@
 			ScpoWR.post("test.php", "id=0&count=123&commit=good");
 			ScpoWR.get("test.php", "id=1&count=123&commit=good");
 			ScpoWR.post("//wrong-website", "id=2&count=123&commit=good");
+			ScpoWR.ajax("get", "//wrong-website", "id=2&count=123&commit=good");
 		}];
 	</script>
 </head>
