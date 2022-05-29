@@ -89,9 +89,12 @@ ScpoWR.qrycnv = {
 	},
 	getype: function (n) {
 		if (typeof n == "string") return "str";
-		if (n instanceof HTMLFormElement) return "frm";
-		if (typeof n == "object") return "obj";
-		return "unkown";
+		if (typeof n != "object") return "unkown";
+		if (window.HTMLElement
+			? n instanceof HTMLElement
+			: (n.nodeType === 1 && typeof n.nodeName === 'string')
+		) return "frm";
+		return "obj";
 	},
 	isType: function (n) {
 		switch (n) {

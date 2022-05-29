@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=6">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="http://js.loc.com:8081/scpo-webreq.js"></script>
+	<script>
+		function test() {
+			ScpoWR
+				.then(function () { return "hhhh + "; })
+				.then(function (add) { con.innerHTML += add + "success\n"; })
+				.fget("http://js.loc.com:8081/script/scpo/webreq/test.php", frmTest)
+				.then(function (data) { return data + "...And I'm coming!\n"; })
+				.then(function (md) { con.innerHTML += md; })
+				.fget("http://tesmo")
+				.onerr(function () { con.innerHTML += "faild\n"; });
+		}
+	</script>
+</head>
+
+<body>
+	<pre id="con"></pre>
+	<form id="frmTest">
+		count:<br />
+		<input name="count" value="1" /><br />
+		commit:<br />
+		<input name="commit" value="good" /><br />
+		<div>
+			item[0]:<br />
+			<input name="item[0]" value="apple" /><br />
+			item[1]:<br />
+			<input name="item[1]" value="banana" /><br />
+		</div>
+	</form>
+	<button onclick="test()">test</button>
+</body>
+
+</html>
