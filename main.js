@@ -2,7 +2,7 @@
 /**
  * 幻想私社网络请求函数库
  * @author E0SelmY4V - from 幻想私社
- * @version 1.2-20220601 包含qrycnv、AJAX函数和函数式编程相关
+ * @version 1.2-20220602 包含qrycnv、AJAX函数和函数式编程相关
  * @link https://github.com/E0SelmY4V/ScpoWR/
  */
 var ScpoWR = window.ScpoWR ? ScpoWR : {};
@@ -47,9 +47,17 @@ ScpoWR.config = {
 };
 /**请求字符串转换函数 */
 ScpoWR.qrycnv = {
+	iptype: [
+		"input",
+		"textarea"
+	],
 	frm2str: function (frm) {
-		var iptlist = frm.getElementsByTagName("input"), i = -1, ipt, str = "", e = encodeURIComponent;
-		while (ipt = iptlist[++i]) str += e(ipt.name) + "=" + e(ipt.value) + "&";
+		var l = [], k, j, i, k = j = i = -1, p, d, a, str = "", e = encodeURIComponent;
+		while (p = this.iptype[++j]) {
+			var a = frm.getElementsByTagName(p);
+			while (d = a[++k]) l.push(d);
+		}
+		while (p = l[++i]) str += e(p.name) + "=" + e(p.value) + "&";
 		return str.slice(0, -1);
 	},
 	str2frm: function (str) {
@@ -63,8 +71,12 @@ ScpoWR.qrycnv = {
 		return frm;
 	},
 	frm2obj: function (frm) {
-		var iptlist = frm.getElementsByTagName("input"), i = -1, ipt, obj = {};
-		while (ipt = iptlist[++i]) obj[ipt.name] = ipt.value;
+		var l = [], k, j, i, k = j = i = -1, p, d, a, obj = {};
+		while (p = this.iptype[++j]) {
+			var a = frm.getElementsByTagName(p);
+			while (d = a[++k]) l.push(d);
+		}
+		while (p = l[++i]) obj[p.name] = p.value;
 		return obj;
 	},
 	obj2frm: function (obj) {
@@ -96,19 +108,17 @@ ScpoWR.qrycnv = {
 		) return "frm";
 		return "obj";
 	},
+	type: {
+		str: true,
+		frm: true,
+		obj: true
+	},
 	isType: function (n) {
-		switch (n) {
-			case "str":
-			case "frm":
-			case "obj":
-				return true;
-			default:
-				return false;
-		}
+		return Boolean(this.type[n]);
 	},
 	convert: function (n, type) {
-		type = this[this.getype(n) + "2" + type];
-		return type ? type(n) : n;
+		type = this.getype(n) + "2" + type;
+		return this[type] ? this[type](n) : n;
 	},
 	toStr: function (n) {
 		return this.convert(n, "str");
@@ -220,24 +230,47 @@ ScpoWR.ajax = function (method, url, data, todo, ordo, format, async, scdo) {
 		},
 		/**
 		 * 发起AJAX请求
+		 * @param {boolean} order 是否使用上一次回调的返回的参数数组
 		 * @param {"post"|"get"} method 请求方法
 		 * @param {string} url 请求地址
 		 * @param {object|string} data 请求数据
 		 * @param {"xml"|"str"} format 返回数据的格式
 		 * @returns {Proc} 执行的过程对象
 		 */
-		frequest: function (method, url, data, format) {
-			var proc = new Proc(), todo = function () { scpo.request(method, url); };
-			if (typeof url == "object") url = [url[0], url[1], proc.clear, proc.clear, url[2], true];
-			else url = [url, data, proc.clear, proc.clear, format, true];
+		mrequest: function (order, method, url, data, format) {
+			var proc = new Proc();
+			if (order == "get" || order == "post") {
+				format = data, data = url, url = method, method = order, order = false;
+				if (typeof url == "object") data = url[1], format = url[2], url = url[0];
+			}
+			var todo = function (param) {
+				if (order !== false) {
+					if (typeof param == "object") {
+						if (order === true) method = Array.isArray(param) ? param.shift() : param.method;
+					} else {
+						if (order === true) method = "get";
+						param = [param];
+					}
+					url = param[0] || param.url;
+					data = param[1] || param.data;
+					format = param[2] || param.format;
+				}
+				scpo.request(method, [url, data, proc.clear, proc.clear, format, true]);
+			};
 			this instanceof Proc ? this.then(todo) : todo();
 			return proc;
 		},
 		fget: function () {
-			return this.frequest("get", arguments);
+			return this.mrequest("get", arguments);
 		},
 		fpost: function () {
-			return this.frequest("post", arguments);
+			return this.mrequest("post", arguments);
+		},
+		sget: function () {
+			return this.mrequest(void (0), "get");
+		},
+		spost: function () {
+			return this.mrequest(void (0), "post");
 		}
 	};
 	for (var i in proto) Proc.prototype[i] = scpo[i] = proto[i]
