@@ -2,10 +2,10 @@
 /**
  * 幻想私社网络请求函数库
  * @author E0SelmY4V - from 幻想私社
- * @version 1.2 包含qrycnv、AJAX函数和函数式编程相关
+ * @version 1.2-20220601 包含qrycnv、AJAX函数和函数式编程相关
  * @link https://github.com/E0SelmY4V/ScpoWR/
  */
-var ScpoWR = {};
+var ScpoWR = window.ScpoWR ? ScpoWR : {};
 /**默认配置 */
 ScpoWR.config = {
 	/**
@@ -181,76 +181,65 @@ ScpoWR.ajax = function (method, url, data, todo, ordo, format, async, scdo) {
 	 */
 	function Proc(cleared) {
 		var n = this;
+		this.todo = [], this.ordo = [];
 		if (cleared) this.cleared = true;
 		else this.clear = function (param) {
-			var w = param instanceof XMLHttpRequest;
-			if (w && typeof n[0][1] != "function") scpo.config.ordo(param);
-			else for (var i = 0, w = Number(w); i < n.length; i++) {
-				if (typeof n[i][w] == "function") param = n[i][w](param);
-				else continue;
-			}
-			n.cleared = true;
-			n.lastRtn = param;
+			var w = param instanceof XMLHttpRequest ? "ordo" : "todo", f, d = true;
+			while(f = n[w].shift()) if (typeof f == "function") param = f(param), d = false;
+			if (d) scpo.config[w](param);
+			n.cleared = true, n.lastRtn = param;
 		};
 	}
-	/**
-	 * 添加回调
-	 * @param {(param: any) => any} todo 成功时的回调函数
-	 * @param {(param: any) => any} ordo 出错时的回调函数
-	 * @returns {Proc} 执行的过程对象
-	 */
-	function then(todo, ordo) {
-		var proc = this instanceof Proc ? this : new Proc(true);
-		if (proc.cleared) {
-			if (typeof todo == "function") proc.param = todo(proc.param);
-		} else proc[proc.length++] = [todo, ordo];
-		return proc;
-	}
-	/**更改默认配置 */
-	function fset(name, value) {
-		return this.then(function (param) {
-			return scpo.config.change(name, value), param;
-		});
-	}
-	/**
-	 * catch错误
-	 * @param {(param: any) => any} ordo 出错时的回调函数
-	 * @returns {Proc} 执行的过程对象
-	 */
-	function onerr(ordo) {
-		return this.then(null, ordo);
-	}
-	/**
-	 * 发起AJAX请求
-	 * @param {"post"|"get"} method 请求方法
-	 * @param {string} url 请求地址
-	 * @param {object|string} data 请求数据
-	 * @param {"xml"|"str"} format 返回数据的格式
-	 * @returns {Proc} 执行的过程对象
-	 */
-	function frequest(method, url, data, format) {
-		var proc = new Proc(), todo = function () { scpo.request(method, url); };
-		if (typeof url == "object") url = [url[0], url[1], proc.clear, proc.clear, url[2], true];
-		else url = [url, data, proc.clear, proc.clear, format, true];
-		this instanceof Proc ? this.then(todo) : todo();
-		return proc;
-	}
-	function fget() {
-		return this.frequest("get", arguments);
-	}
-	function fpost() {
-		return this.frequest("post", arguments);
-	}
-	Proc.prototype = {
-		length: 0,
-		clear: new Function(),
-		cleared: false,
-		lastRtn: void (0),
-		then: scpo.then = then,
-		fset: scpo.fset = fset,
-		onerr: scpo.onerr = onerr,
-		frequest: scpo.frequest = frequest,
-		fget: scpo.fget = fget,
-		fpost: scpo.fpost = fpost
+	var proto = {
+		/**
+		 * 添加回调
+		 * @param {(param: any) => any} todo 成功时的回调函数
+		 * @param {(param: any) => any} ordo 出错时的回调函数
+		 * @returns {Proc} 执行的过程对象
+		 */
+		then: function (todo, ordo) {
+			var proc = this instanceof Proc ? this : new Proc(true);
+			if (proc.cleared) {
+				if (typeof todo == "function") proc.lastRtn = todo(proc.lastRtn);
+			} else proc.todo.push(todo), proc.ordo.push(ordo);
+			return proc;
+		},
+		/**更改默认配置 */
+		fset: function (name, value) {
+			return this.then(function (param) {
+				return scpo.config.change(name, value), param;
+			});
+		},
+		/**
+		 * catch错误
+		 * @param {(param: any) => any} ordo 出错时的回调函数
+		 * @returns {Proc} 执行的过程对象
+		 */
+		onerr: function (ordo) {
+			return this.then(null, ordo);
+		},
+		/**
+		 * 发起AJAX请求
+		 * @param {"post"|"get"} method 请求方法
+		 * @param {string} url 请求地址
+		 * @param {object|string} data 请求数据
+		 * @param {"xml"|"str"} format 返回数据的格式
+		 * @returns {Proc} 执行的过程对象
+		 */
+		frequest: function (method, url, data, format) {
+			var proc = new Proc(), todo = function () { scpo.request(method, url); };
+			if (typeof url == "object") url = [url[0], url[1], proc.clear, proc.clear, url[2], true];
+			else url = [url, data, proc.clear, proc.clear, format, true];
+			this instanceof Proc ? this.then(todo) : todo();
+			return proc;
+		},
+		fget: function () {
+			return this.frequest("get", arguments);
+		},
+		fpost: function () {
+			return this.frequest("post", arguments);
+		}
 	};
+	for (var i in proto) Proc.prototype[i] = scpo[i] = proto[i]
 }(ScpoWR));
+if (ScpoWR.onload) ScpoWR.onload();
