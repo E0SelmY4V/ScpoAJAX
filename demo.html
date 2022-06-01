@@ -5,8 +5,9 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>ScpoWR Demo</title>
-	<script src="http://js.loc.com:8081/scpo-webreq.js"></script>
+	<script src="main.js"></script>
 	<script>
+		try{
 		function log(n) {
 			con.innerHTML += n;
 		}
@@ -15,12 +16,10 @@
 		}
 		var testFunc = [() => {
 			cls();
-			ScpoWR.fget("test.php", frmTest)
-				.then(data => log(data));
-			ScpoWR.fpost("test.php", frmTest)
-				.then(data => log(data));
-			ScpoWR.frequest("get", "test.php", frmTest)
-				.then(data => log(data));
+			ScpoWR.config.todo = data => log(data);
+			ScpoWR.fget("test.php", frmTest);
+			ScpoWR.fpost("test.php", frmTest);
+			ScpoWR.mrequest("get", "test.php", frmTest);
 		}, () => {
 			cls();
 			ScpoWR
@@ -32,6 +31,15 @@
 				.fget("test.php", { count: 123, commit: "good" })
 				.then(data => log(data))
 				.fpost("test.php", frmTest)
+				.then(data => log(data))
+				.then(() => ["test.php", "name=sget"])
+				.sget()
+				.then(data => (log(data), {
+					url: "test.php",
+					method: "post",
+					data: "name=spost"
+				}))
+				.mrequest(true)
 				.then(data => log(data))
 				.fget("//wrong-website")
 				.onerr(() => log("failure\n"))
@@ -45,10 +53,11 @@
 				todo: data => log(data)
 			});
 			ScpoWR.post("test.php", "id=0&count=123&commit=good");
-			ScpoWR.get("test.php", "id=1&count=123&commit=good");
-			ScpoWR.post("//wrong-website", "id=2&count=123&commit=good");
+			ScpoWR.fget("test.php", "id=1&count=123&commit=good");
+			ScpoWR.fpost("//wrong-website", "id=2&count=123&commit=good");
 			ScpoWR.ajax("get", "//wrong-website", "id=2&count=123&commit=good");
 		}];
+}catch(e){document.write(e.message)}
 	</script>
 </head>
 
