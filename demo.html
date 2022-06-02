@@ -19,7 +19,7 @@
 			ScpoWR.config.todo = data => log(data);
 			ScpoWR.fget("test.php", frmTest);
 			ScpoWR.fpost("test.php", frmTest);
-			ScpoWR.mrequest("get", "test.php", frmTest);
+			ScpoWR.frequest("get", "test.php", frmTest);
 		}, () => {
 			cls();
 			ScpoWR
@@ -32,14 +32,14 @@
 				.then(data => log(data))
 				.fpost("test.php", frmTest)
 				.then(data => log(data))
-				.then(() => ["test.php", "name=sget"])
-				.sget()
+				.then(() => ["test.php", "name=get"])
+				.fget()
 				.then(data => (log(data), {
 					url: "test.php",
 					method: "post",
-					data: "name=spost"
+					data: "name=post"
 				}))
-				.mrequest(true)
+				.frequest(true)
 				.then(data => log(data))
 				.fget("//wrong-website")
 				.onerr(() => log("failure\n"))

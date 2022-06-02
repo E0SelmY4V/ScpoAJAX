@@ -2,10 +2,10 @@
 /**
  * 幻想私社网络请求函数库
  * @author E0SelmY4V - from 幻想私社
- * @version 1.2-20220602 包含qrycnv、AJAX函数和函数式编程相关
+ * @version 1.2-20220602:1 包含qrycnv、AJAX函数和函数式编程相关
  * @link https://github.com/E0SelmY4V/ScpoWR/
  */
-var ScpoWR = window.ScpoWR ? ScpoWR : {};
+var ScpoWR = ScpoWR || {};
 /**默认配置 */
 ScpoWR.config = {
 	/**
@@ -237,7 +237,7 @@ ScpoWR.ajax = function (method, url, data, todo, ordo, format, async, scdo) {
 		 * @param {"xml"|"str"} format 返回数据的格式
 		 * @returns {Proc} 执行的过程对象
 		 */
-		mrequest: function (order, method, url, data, format) {
+		frequest: function (order, method, url, data, format) {
 			var proc = new Proc();
 			if (order == "get" || order == "post") {
 				format = data, data = url, url = method, method = order, order = false;
@@ -261,16 +261,14 @@ ScpoWR.ajax = function (method, url, data, todo, ordo, format, async, scdo) {
 			return proc;
 		},
 		fget: function () {
-			return this.mrequest("get", arguments);
+			return typeof arguments[0] == "undefined"
+				? this.frequest(void (0), "get")
+				: this.frequest("get", arguments);
 		},
 		fpost: function () {
-			return this.mrequest("post", arguments);
-		},
-		sget: function () {
-			return this.mrequest(void (0), "get");
-		},
-		spost: function () {
-			return this.mrequest(void (0), "post");
+			return typeof arguments[0] == "undefined"
+				? this.frequest(void (0), "post")
+				: this.frequest("post", arguments);
 		}
 	};
 	for (var i in proto) Proc.prototype[i] = scpo[i] = proto[i]
