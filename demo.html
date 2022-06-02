@@ -33,7 +33,7 @@
 				.fpost("test.php", frmTest)
 				.then(data => log(data))
 				.then(() => ["test.php", "name=get"])
-				.fget()
+				.fget(true)
 				.then(data => (log(data), {
 					url: "test.php",
 					method: "post",
