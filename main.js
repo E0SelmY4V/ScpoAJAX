@@ -2,7 +2,7 @@
  * @file 幻想私社网络请求函数库
  * @author E0SelmY4V - from 幻想私社
  * @version 1.2.20220603 包含qrycnv、AJAX函数和函数式编程相关
- * @link https://github.com/E0SelmY4V/ScpoWR/
+ * @link https://github.com/E0SelmY4V/scpo-webreq.js/
  */
 "use strict";
 var ScpoWR = ScpoWR || {};
